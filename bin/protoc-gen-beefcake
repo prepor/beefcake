@@ -2,10 +2,8 @@
 require 'rubygems'
 require 'beefcake/generator'
 
-ns = (ENV["BEEFCAKE_NAMESPACE"] || "").split("::")
-
 req = CodeGeneratorRequest.decode(STDIN.read)
-res = Beefcake::Generator.compile(ns, req)
+res = Beefcake::Generator.compile(req)
 
 # Send it out!
 STDOUT.print(res.encode)

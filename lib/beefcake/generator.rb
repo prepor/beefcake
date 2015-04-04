@@ -140,10 +140,10 @@ module Beefcake
     T = CodeGeneratorRequest::FieldDescriptorProto::Type
 
 
-    def self.compile(ns, req)
+    def self.compile(req)
       file = req.proto_file.map do |file|
         g = new(StringIO.new)
-        g.compile(ns, file)
+        g.compile(file)
 
         g.c.rewind
         CodeGeneratorResponse::File.new(
@@ -231,15 +231,7 @@ module Beefcake
 
       # Determine the type-name and convert to Ruby
       type = if f.type_name
-        # We have a type_name so we will use it after converting to a
-        # Ruby friendly version
-        t = f.type_name
-        if pkg
-          t = t.gsub(pkg, "") # Remove the leading package name
-        end
-        t = t.gsub(/^\.*/, "")       # Remove leading `.`s
-
-        t.gsub(".", "::")  # Convert to Ruby namespacing syntax
+        t = f.type_name.gsub(/^\.*/, "").split('.').map { |v| camelize(v) } * '::'
       else
         ":#{name_for(f, T, f.type)}"
       end
@@ -274,7 +266,7 @@ module Beefcake
       puts "require \"beefcake\""
       puts
 
-      ns!(ns) do
+      ns!(file.package.split('.').map { |v| camelize(v) }) do
         Array(file.enum_type).each do |et|
           enum!(et)
         end
@@ -307,6 +299,14 @@ module Beefcake
       else
         c.puts
       end
+    end
+
+    def camelize(term)
+      string = term.to_s
+      string = string.sub(/^[a-z\d]*/) { $&.capitalize }
+      string.gsub!(/(?:_|(\/))([a-z\d]*)/i) { "#{$1}#{$2.capitalize}" }
+      string.gsub!('/', '::')
+      string
     end
 
   end

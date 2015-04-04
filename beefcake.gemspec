@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "beefcake/version"
 
 Gem::Specification.new do |s|
-  s.name        = "beefcake"
+  s.name        = "prepor-beefcake"
   s.version     = Beefcake::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Blake Mizerany", "Matt Proud", "Bryce Kerley"]
