@@ -260,7 +260,7 @@ module Beefcake
       b.name_for(mod, val).to_s.gsub(/.*_/, "").downcase
     end
 
-    def compile(ns, file)
+    def compile(file)
       package_part = file.package ? "for #{file.package}" : ''
       puts "## Generated from #{file.name} #{package_part}".strip
       puts "require \"beefcake\""
