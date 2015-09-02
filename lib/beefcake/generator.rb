@@ -303,10 +303,15 @@ module Beefcake
 
     def camelize(term)
       string = term.to_s
-      string = string.sub(/^[a-z\d]*/) { $&.capitalize }
-      string.gsub!(/(?:_|(\/))([a-z\d]*)/i) { "#{$1}#{$2.capitalize}" }
-      string.gsub!('/', '::')
-      string
+      if /^[A-Z\d]+(?:_[A-Z\d]+)+$/ =~ string
+        # Do not mess with SNAKE_CONSTANTS
+        string
+      else
+        string = string.sub(/^[a-z\d]*/) { $&.capitalize }
+        string.gsub!(/(?:_|(\/))([a-z\d]*)/i) { "#{$1}#{$2.capitalize}" }
+        string.gsub!('/', '::')
+        string
+      end
     end
 
   end
